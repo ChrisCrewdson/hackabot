@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+
+use URI::Find::Rule;
+use LWP::Simple;
+use HTML::TokeParser;
+use XML::Simple;
+use Hackabot::Client;
+
+my $hbc         = Hackabot::Client->new;
+my $conf        = $hbc->{'conf'}->{'commands'};
+my $bitly_user  = $conf->{'bitly'}->{'username'};
+my $bitly_apikey= $conf->{'bitly'}->{'api_key'};
+
+sub bitly_link {
+    my $url = shift;
+    $url =~ s/([^A-Za-z0-9])/sprintf("%%%02X", ord($1))/seg;
+    $output = XMLin(get("http://api.bit.ly/v3/shorten?login=$bitly_user&apikey=$bitly_apikey&uri=$url&format=xml"));
+    return "$output->{data}->{url}";
+}
+
+my $msg = $hbc->readline;
+my $nick = $hbc->sent_by;
+my $chan = $hbc->channel;
+
+my @urls = URI::Find::Rule->in($msg,1);
+
+if (@urls) {
+    foreach my $url (@urls){
+        $short_url = bitly_link($url);
+        $content = get($url);
+        $parser = HTML::TokeParser->new(\$content);
+        $parser->get_tag("title");
+        $title = $parser->get_trimmed_text;
+        print "send " . $title . " - [ $short_url ]\n";
+    }
+}
