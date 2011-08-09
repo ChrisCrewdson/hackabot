@@ -2,7 +2,7 @@
 
 ##HACKABOT_HELP##
 # Recommends a place you should go.
-# __NAME__ [ add <place> | noun <item> | adj <description> ]
+# !lunch [ add <place> | noun <item> | adj <description> ]
 ##HACKABOT_HELP##
 
 # This was based on Scott's lunchalizer irssi script/bot
@@ -12,7 +12,7 @@ use strict;
 use File::Basename;
 use Hackabot::Client;
 
-$0 = basename($0); 
+$0 = basename($0);
 
 sub make_lunch {
     my ($hbc, $dbh, $sth, @row, $lunch, $time);

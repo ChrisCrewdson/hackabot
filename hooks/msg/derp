@@ -10,4 +10,4 @@ msg = hbc.readline()
 nick = hbc.sent_by()
 
 if re.search(r'^herp', msg, re.IGNORECASE):
-    print "send derp"
+    print "send %s: derp" %(nick)
