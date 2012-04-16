@@ -36,6 +36,9 @@ class ExternalPlugins(object):
         for key, val in conf.items():
             vars["HB_%s" % key.upper()] = str(val)
 
+        if conn.network.id:
+            vars['HB_NETWORK'] = conn.network.id
+
         vars['HB_NICK'] = conn.nickname
         vars['HB_XML'] = ElementTree.tostring(conn.manager.config)
         text = ""
