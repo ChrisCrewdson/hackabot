@@ -5,11 +5,12 @@ import sys
 
 from twisted.python import log, util, failure
 
-LEVELS = [ 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE' ]
+LEVELS = [ 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE', 'RAINMAN' ]
 
 _log_level = 2
 _log_fallback = sys.stderr
 _loud_init = False
+_ctrl_chars = ''.join(chr(c) for c in xrange(1, 32))
 
 def _logger(event):
     # This is a twisted log observer
@@ -28,6 +29,10 @@ def _logger(event):
             text = "\n".join(event['message'])
             if not text:
                 text = str(event.get('failure', ''))
+
+        # IRC reuses ASCII control characters for text formatting,
+        # these are meaningless to anything reading the log.
+        text = text.translate(None, _ctrl_chars)
 
         prefix = event.get('prefix', event.get('system', '-'))
         date = time.strftime("%b %d %H:%M:%S",
@@ -84,3 +89,6 @@ def debug(text, **kw):
 
 def trace(text, **kw):
     log.msg(text, log_level='TRACE', **kw)
+
+def rainman(text, **kw):
+    log.msg(text, log_level='RAINMAN', **kw)
