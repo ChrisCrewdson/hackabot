@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-##HACKABOT_HELP#
+##HACKABOT_HELP##
 # FUCK OFF
 # fuckoff [someone]
 ##HACKABOT_HELP##
@@ -8,18 +8,19 @@
 import hackabot
 from hackabot.client import Client
 
-fuckoff_str = "FUCK OFF %s!  凸(ಠ益ಠ)凸"
+fuckoff_str = "FUCK OFF%s!  凸(ಠ益ಠ)凸"
 
 def main():
     hbc = Client()
     someone = hbc.readline()
+
     if not someone:
         someone = ""
     else:
         someone = " " + someone
         someone = someone.upper()
 
-    print "send" + fuckoff_str % (someone)
+    print "send " + fuckoff_str % (someone)
 
 if __name__ == "__main__":
     main()
