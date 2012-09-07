@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+##HACKABOT_HELP#
+# FUCK OFF
+# fuckoff [someone]
+##HACKABOT_HELP##
+
+#import hackabot
+#from hackabot.client import Client
+import sys
+
+fuckoff_str = "FUCK OFF%s!  凸(ಠ益ಠ)凸"
+
+def main():
+    #hbc = Client()
+
+    #someone = hbc.readline()
+    someone = sys.argv[1]
+    print "halp"
+    if not someone:
+        someone = ""
+    else:
+        someone = " " + someone
+        someone = someone.upper()
+
+    print fuckoff_str % (someone)
+
+if __name__ == "__main__":
+    main()
