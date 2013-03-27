@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+##HACKABOT_HELP##
+# Give an out of context recent reddit comment for user
+# !reddit [user]
+##HACKABOT_HELP##
+
+import requests
+import json
+from random import randint
+import sys
+import os
+import re
+
+
+import hackabot
+from hackabot.client import Client
+
+
+def get_comment(user):
+    url = "http://reddit.com/user/%s/.json" % user
+
+    r = requests.get(url)
+    data = json.loads(r.content)
+
+    restricted = ['&gt;', '&lt;']
+    comments = data['data']['children']
+    save = None
+
+    while (save == None):
+        skip = False
+        ran = randint(0, len(comments)-1)
+        #print "len = %s, ran = %s" %(len(comments), ran)
+
+        for word in restricted:
+            if (word in comments[ran]['data']['body']):
+                skip = True
+
+        if(len(comments[ran]['data']['body']) > 400):
+            skip = True
+
+        if not skip:
+            save = comments[ran]['data']['body']
+
+    return save
+
+def main():
+    hbc = Client()
+    msg = hbc.readline()
+    nick = hbc.sent_by()
+    user = ''
+
+    m = re.match(r'^(?P<user>.*)$', msg)
+    if not m:
+        print "msg %s: Who are you talking about, yourself?" % (nick,)
+        user = nick
+    else:
+        user = m.group('user')
+
+    print "%s" % get_comment(user)
+
+
+if __name__ == "__main__":
+    main()
