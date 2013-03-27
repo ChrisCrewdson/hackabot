@@ -11,9 +11,6 @@ from random import randint
 import sys
 import os
 import re
-
-
-import hackabot
 from hackabot.client import Client
 
 
@@ -57,7 +54,7 @@ def main():
     else:
         user = m.group('user')
 
-    print "%s" % get_comment(user)
+    print "send %s" % get_comment(user)
 
 
 if __name__ == "__main__":
