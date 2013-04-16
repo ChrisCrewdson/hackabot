@@ -1,0 +1,42 @@
+#!/usr/bin/perl
+
+##HACKABOT_HELP##
+# Print who's made the most un-popular ++/-- elements
+# !unfonz
+##HACKABOT_HELP##
+
+use strict;
+use DBI;
+use Time::localtime;
+use Hackabot::Client;
+
+my $hbc = Hackabot::Client->new;
+
+sub get_list {
+	my ($dbh, $sth);
+
+    $dbh = $hbc->dbi;
+	if (!$dbh) {
+		die "score: Failed to connect to database\n";
+	}
+
+	$sth = $dbh->prepare("SELECT nick, COUNT(name) as `count` FROM score WHERE value='1' OR value='-1' GROUP BY nick ORDER BY `count` DESC LIMIT 5");
+	$sth->execute;
+	my @list;
+	for (my $i = 0; $i < 5; $i++) {
+		$list[$i] = $sth->fetchrow_hashref;
+	}
+	$sth->finish();
+
+	$dbh->disconnect;
+
+	return @list;
+}
+
+
+my @list = get_list();
+#print "sendnext\n";
+print "send UnFonz Vars:\n";
+for (my $i = 0; $i < 5; $i++) {
+	print "send  $list[$i]->{'count'} $list[$i]->{'nick'}\n";
+}
