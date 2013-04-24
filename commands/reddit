@@ -19,27 +19,23 @@ def get_comment(user):
 
     r = requests.get(url)
     data = json.loads(r.content)
+    if (data.has_key('error')):
+        return data['error']
 
     restricted = ['&gt;', '&lt;']
     comments = data['data']['children']
-    save = None
 
-    while (save == None):
-        skip = False
-        ran = randint(0, len(comments)-1)
-        #print "len = %s, ran = %s" %(len(comments), ran)
+    if (len(comments) < 1):
+        return "No comments for %s" % user
 
-        for word in restricted:
-            if (word in comments[ran]['data']['body']):
-                skip = True
+    comments = [x for x in comments if x['data'].has_key('body')]
+    comments = [x for x in comments if len(x['data']['body']) < 400]
 
-        if(len(comments[ran]['data']['body']) > 400):
-            skip = True
+    for word in restricted:
+        comments = [x for x in comments if word not in x['data']['body']]
 
-        if not skip:
-            save = comments[ran]['data']['body']
-
-    return save
+    ran = randint(0, len(comments)-1)
+    return comments[ran]['data']['body']
 
 def main():
     hbc = Client()
@@ -48,11 +44,14 @@ def main():
     user = ''
 
     m = re.match(r'^(?P<user>.*)$', msg)
-    if not m:
-        print "msg %s: Who are you talking about, yourself?" % (nick,)
-        user = nick
-    else:
+    if m:
         user = m.group('user')
+    else:
+        print "send No user specified"
+        return
+    if (user == ''):
+        print "send No user specified"
+        return
 
     print "send %s" % get_comment(user)
 
