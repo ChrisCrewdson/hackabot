@@ -23,16 +23,19 @@ def get_comment(user):
         return data['error']
 
     restricted = ['&gt;', '&lt;']
-    comments = data['data']['children']
-
-    if (len(comments) < 1):
-        return "No comments for %s" % user
+    if(data.has_key('data')):
+        comments = data['data']['children']
+    else:
+        return "Malformed response"
 
     comments = [x for x in comments if x['data'].has_key('body')]
     comments = [x for x in comments if len(x['data']['body']) < 400]
 
     for word in restricted:
         comments = [x for x in comments if word not in x['data']['body']]
+
+    if (len(comments) < 1):
+        return "No comments for %s" % user
 
     ran = randint(0, len(comments)-1)
     return comments[ran]['data']['body']
